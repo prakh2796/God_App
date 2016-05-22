@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/feed_bg">
+
+    <EditText
+        android:layout_width="263dp"
+        android:layout_height="42dp"
+        android:id="@+id/cmmt_text"
+        android:hint="Add comment"
+        android:layout_marginLeft="@dimen/feed_item_margin"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_parent_rounded_corner"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/feed_item_margin"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_parent_rounded_corner"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:text="Submit  "
+        android:layout_marginRight="@dimen/feed_item_margin"
+        android:id="@+id/submit_comment" />
+</LinearLayout>

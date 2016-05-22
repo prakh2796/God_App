@@ -1,16 +1,20 @@
 package god.prakhar.com.god;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -34,11 +38,13 @@ public class Expand_Post extends AppCompatActivity {
     private ListView listView;
     private FeedListAdapter listAdapter;
     private List<FeedItem> feedItems;
-    private String URL_FEED = "http://gameworld.pythonanywhere.com/expand";
+    private String URL_FEED = "http://hindi.pythonanywhere.com/expand/";
     String propic = "https://upload.wikimedia.org/wikipedia/en/7/70/Shawn_Tok_Profile.jpg";
+    private String urlJsonObj = "http://hindi.pythonanywhere.com/add_comment/";
+    private  String id;
+    private  TextView item1;
 
     Intent intent;
-    String post_title,post_type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +60,7 @@ public class Expand_Post extends AppCompatActivity {
         listView.setAdapter(listAdapter);
 
         getClickedPost();
-        setLikes();
+        addcomment();
         makeJsonObjectRequest();
 
 //        listAdapter.notifyDataSetChanged();
@@ -72,52 +78,48 @@ public class Expand_Post extends AppCompatActivity {
         String date = intent.getExtras().getString("date");
         item.setDate(date);
         String title = intent.getExtras().getString("title");
-        post_title = title;
         item.setTitle(title);
         String content = intent.getExtras().getString("content");
         item.setContent(content);
-        String likes = "-99";
-//        item.setLikes(likes);
         String comments = "-99";
         item.setComments(comments);
+        id = intent.getExtras().getString("id");
+        URL_FEED = URL_FEED + id;
         item.setType(0);
-        post_type = intent.getExtras().getString("post_type");
 
         feedItems.add(item);
     }
 
-    private void setLikes()
+    private void addcomment()
     {
         FeedItem item = new FeedItem();
-        intent = getIntent();
-        String likes = intent.getExtras().getString("likes");
-//        item.setLikes(likes);
-        String likedornot = intent.getExtras().getString("likedornot");
-//        item.setLikedornot(likedornot);
-        item.setType(1);
-
+        item.setType(2);
         feedItems.add(item);
+        item1 = (TextView) findViewById(R.id.cmmt_text);
+        Button button = (Button) findViewById(R.id.submit_comment);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                makeJsonObjectRequest1();
+//            }
+//        });
     }
 
 
     private void makeJsonObjectRequest() {
-
-//        showpDialog();
-
-        StringRequest sr = new StringRequest(Request.Method.POST, URL_FEED, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_FEED,
+                new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //System.out.println("0");
                 try{
-                    //Toast.makeText(getApplication(),response,Toast.LENGTH_LONG).show();
                     System.out.println(response);
 
                     JSONObject obj1 = new JSONObject(response);
                     String status = obj1.getString("status");
 
-                    if (status.equals("comments")) {
-                        JSONArray unames = new JSONArray(obj1.getString("users"));
-                        JSONArray comments = new JSONArray(obj1.getString("display"));
+                    if (status.equals("success")) {
+                        JSONArray unames = new JSONArray(obj1.getString("user_name"));
+                        JSONArray comments = new JSONArray(obj1.getString("comment"));
                         int no_of_posts = Integer.parseInt(obj1.getString("count"));
 
                         for (int i = 0; i < no_of_posts; i++) {
@@ -125,30 +127,21 @@ public class Expand_Post extends AppCompatActivity {
 
                             String name = unames.get(i).toString();
                             item.setName(name);
-//                        Toast.makeText(getApplication(),name,Toast.LENGTH_LONG).show();
 
                             JSONObject obj2 = new JSONObject(comments.get(i).toString());
-                            String date = obj2.getString("date");
-                            item.setDate(date);
+//                            String date = obj2.getString("date");
+//                            item.setDate(date);
 //                        Toast.makeText(getApplication(),date,Toast.LENGTH_LONG).show();
 
                             String content = obj2.getString("content");
                             item.setContent(content);
-//                        Toast.makeText(getApplication(),content,Toast.LENGTH_LONG).show();
 
-                            item.setType(2);
+                            item.setType(1);
 
                             feedItems.add(item);
                         }
-
-
                         // notify data changes to list adapater
                         listAdapter.notifyDataSetChanged();
-
-
-                    }else if (status.equals("no comments"))
-                    {
-                        Toast.makeText(getApplication(),"No comments...",Toast.LENGTH_SHORT).show();
                     }
 
                 }catch (Exception e)
@@ -166,18 +159,47 @@ public class Expand_Post extends AppCompatActivity {
                 //error.printStackTrace();
                 System.out.println(error);
                 Toast.makeText(getApplication(),"Server is not working :(",LENGTH_SHORT).show();
-//                hidepDialog();
                 finish();
 
+            }
+        });
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(stringRequest);
+    }
+
+    private void makeJsonObjectRequest1() {
+
+        StringRequest sr = new StringRequest(Request.Method.POST, urlJsonObj, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    String status = jsonObject.getString("status");
+                    if (status.equals("success"))
+                    {
+                        Toast.makeText(getApplication(),"Comment Added",Toast.LENGTH_SHORT).show();
+                        makeJsonObjectRequest();
+
+                    }
+                }catch (Exception e)
+                {
+                    Toast.makeText(getApplication(), "Server Error :(", Toast.LENGTH_SHORT).show();
+                }
+                //mPostCommentResponse.requestCompleted();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplication(),"No internet connection",LENGTH_SHORT).show();
+                //mPostCommentResponse.requestEndedWithError(error);
             }
         }) {
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
-                System.out.println(post_title);
-                System.out.println(post_type);
-                params.put("title", post_title);
-                params.put("type", post_type);
+                params.put("id",id);
+                params.put("comment",item1.getText().toString());
 
                 return params;
             }

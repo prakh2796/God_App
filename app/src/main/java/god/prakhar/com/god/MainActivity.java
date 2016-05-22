@@ -87,23 +87,26 @@ public class MainActivity extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                intent = new Intent(MainActivity.this,Expand_Post.class);
-
-//                FeedItem data = feedItems.get(position);
+                intent = new Intent(MainActivity.this,Expand_Post.class);
 
                 String uname = feedItems.get(position).getName();
                 String date = feedItems.get(position).getDate();
                 String title = feedItems.get(position).getTitle();
                 String content = feedItems.get(position).getContent();
+                int temp = feedItems.get(position).getId();
+                String number = String.valueOf(temp);
                 int type = feedItems.get(position).getType();
+
+                Log.d("main_id", String.valueOf(number));
 
                 intent.putExtra("username", uname);
                 intent.putExtra("date", date);
                 intent.putExtra("title", title);
                 intent.putExtra("content", content);
+                intent.putExtra("id",number);
                 intent.putExtra("type", type);
 
-//                startActivity(intent);
+                startActivity(intent);
             }
         });
     }
@@ -129,18 +132,15 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onResponse(String response) {
                     try{
-    //
-                        Log.d("Prakhar",response);
-
                         JSONObject obj1 = new JSONObject(response);
-    //                    int no_of_posts = Integer.parseInt(obj1.getString("count"));
+                        int no_of_posts = Integer.parseInt(obj1.getString("count"));
                         JSONArray unames = new JSONArray(obj1.getString("admin_name"));
     //                    JSONArray post_dates = new JSONArray(obj1.getString("post_date"));
                         JSONArray posts = new JSONArray(obj1.getString("post"));
-    //                    JSONArray reply_count = new JSONArray(obj1.getString("reply_count"));
+                        JSONArray coment_count = new JSONArray(obj1.getString("comment_count"));
 
 
-                        for (int i = 0; i < 5 ; i++)
+                        for (int i = 0; i < no_of_posts ; i++)
                         {
                             FeedItem item = new FeedItem();
 
@@ -154,8 +154,11 @@ public class MainActivity extends AppCompatActivity
                             item.setTitle(title);
                             String content = obj2.getString("content");
                             item.setContent(content);
-    //                        String comments = reply_count.get(i).toString();
-    //                        item.setComments(comments);
+                            String temp = obj2.getString("id");
+                            Integer id = Integer.parseInt(temp);
+                            item.setId(id);
+                            String comments = coment_count.get(i).toString();
+                            item.setComments(comments);
 
                             item.setType(0);
 

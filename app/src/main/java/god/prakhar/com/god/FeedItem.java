@@ -4,7 +4,7 @@ package god.prakhar.com.god;
  * Created by Pewds on 20-Nov-15.
  */
 public class FeedItem {
-    //    private int id;
+        private int id;
     private String name, title, profilePic, date, content, comments;
     private int type;
 
@@ -12,10 +12,10 @@ public class FeedItem {
     }
 
 
-    public FeedItem(String name, String title,
+    public FeedItem(int id, String name, String title,
                     String profilePic, String date, String content, int type, String comments) {
         super();
-//        this.id = id;
+        this.id = id;
         this.name = name;
         this.title = title;
         this.profilePic = profilePic;
@@ -27,13 +27,9 @@ public class FeedItem {
 
     }
 
-//    public int getId() {
-//        return id;
-//    }
-//
-//    public void setId(int id) {
-//        this.id = id;
-//    }
+    public int getId() {return id;}
+
+    public void setId(int id) {this.id = id;}
 
     public String getName() {
         return name;

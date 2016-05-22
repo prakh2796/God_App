@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -83,12 +84,12 @@ public class FeedListAdapter extends BaseAdapter {
             TextView date = (TextView) convertView.findViewById(R.id.date);
             TextView title = (TextView) convertView.findViewById(R.id.txtTitle);
             TextView content = (TextView) convertView.findViewById(R.id.txtContent);
-            TextView likes = (TextView) convertView.findViewById(R.id.likes);
             TextView comments = (TextView) convertView.findViewById(R.id.comments);
             NetworkImageView profilePic = (NetworkImageView) convertView.findViewById(R.id.profilePic);
 
             name.setText(item.getName());
             date.setText(item.getDate());
+            comments.setText(item.getComments());
 
             // Chcek for empty title
             if (!TextUtils.isEmpty(item.getTitle())) {
@@ -108,82 +109,19 @@ public class FeedListAdapter extends BaseAdapter {
                 content.setVisibility(View.GONE);
             }
 
-
-
-//            String likessss = item.getLikes();
-//            TextView likeDisplay = (TextView) convertView.findViewById(R.id.likeDisplay);
-//            if (likessss.equals("-99")) {
-//                likes.setVisibility(View.GONE);
-//                likeDisplay.setVisibility(View.GONE);
-//            }else {
-//                likes.setText(item.getLikes());
-//            }
-//
-//            String commentssss = item.getComments();
-//            TextView commentDisplay = (TextView) convertView.findViewById(R.id.commentDisplay);
-//            if (commentssss.equals("-99")) {
-//                comments.setVisibility(View.GONE);
-//                commentDisplay.setVisibility(View.GONE);
-//            }else {
-//                comments.setText(item.getComments());
-//            }
-
+            // Chcek for empty date
+            if (!TextUtils.isEmpty(item.getTitle())) {
+                date.setText(item.getTitle());
+                date.setVisibility(View.VISIBLE);
+            } else {
+                // tile is empty, remove from view
+                date.setVisibility(View.GONE);
+            }
 
             profilePic.setImageUrl(item.getProfilePic(), imageLoader);
 
-//        // Checking for null feed url
-//        if (item.getUrl() != null) {
-//            url.setText(Html.fromHtml("<a href=\"" + item.getUrl() + "\">"
-//                    + item.getUrl() + "</a> "));
-//
-//            // Making url clickable
-//            url.setMovementMethod(LinkMovementMethod.getInstance());
-//            url.setVisibility(View.VISIBLE);
-//        } else {
-//            // url is null, remove from the view
-//            url.setVisibility(View.GONE);
-//        }
 
-        } else if (type == 1)
-        {
-
-            convertView = inflater.inflate(R.layout.like_button, null);
-
-            TextView tv1 = (TextView) convertView.findViewById(R.id.no_of_likes);
-//            tv1.setText(item.getLikes() + " people like this.");
-//            ib1 = (ImageButton) convertView.findViewById(R.id.imageButton);
-//
-//            likess = item.getLikedornot();
-////            Toast.makeText(convertView.getContext(),"likedornot: " + likess,Toast.LENGTH_SHORT).show();
-//            if (likess.equals("1"))
-//            {
-//                ib1.setImageResource(R.drawable.star_on);
-//            }
-//
-//            ib1.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                    System.out.println("button clicked");
-//                    ib1.setImageResource(R.drawable.star_on);
-//
-////                    listAdapter = new FeedListAdapter(Expand_Post.class, feedItems);
-////                    listView.setAdapter(listAdapter);
-//
-////                    if (likess.equals("1"))
-////                    {
-////                        ib1.setImageResource(R.drawable.star_off);
-////                        likess = "0";
-////                    }else
-////                    {
-////                        ib1.setImageResource(R.drawable.star_on);
-////                        likess = "1";
-////
-////                    }
-//                }
-//            });
-
-        } else if (type == 2)
+        }  else if (type == 1)
         {
 
             convertView = inflater.inflate(R.layout.answers, null);
@@ -191,23 +129,40 @@ public class FeedListAdapter extends BaseAdapter {
             TextView cname = (TextView) convertView.findViewById(R.id.cname);
             TextView cdate = (TextView) convertView.findViewById(R.id.cdate);
             TextView ccontent = (TextView) convertView.findViewById(R.id.ctxtContent);
-//            EditText temp = (EditText) convertView.findViewById(R.id.editText9);
-//            cname.setText("dlsvlsvls");
-
-
-//            item = new FeedItem();
             cname.setText(item.getName());
             cdate.setText(item.getDate());
             ccontent.setText(item.getContent());
 
+            // Chcek for empty title
+            if (!TextUtils.isEmpty(item.getName())) {
+                cname.setText(item.getName());
+                cname.setVisibility(View.VISIBLE);
+            } else {
+                // tile is empty, remove from view
+                cname.setVisibility(View.GONE);
+            }
 
-        } else if (type == 3)
+            // Chcek for empty content
+            if (!TextUtils.isEmpty(item.getContent())) {
+                ccontent.setText(item.getContent());
+                ccontent.setVisibility(View.VISIBLE);
+            } else {
+                // content is empty, remove from view
+                ccontent.setVisibility(View.GONE);
+            }
+
+            // Chcek for empty date
+            if (!TextUtils.isEmpty(item.getTitle())) {
+                cdate.setText(item.getTitle());
+                cdate.setVisibility(View.VISIBLE);
+            } else {
+                // tile is empty, remove from view
+                cdate.setVisibility(View.GONE);
+            }
+
+        } else if (type == 2)
         {
-            convertView = inflater.inflate(R.layout.single_item, null);
-
-            TextView item1 = (TextView) convertView.findViewById(R.id.item1);
-
-            item1.setText(item.getName());
+            convertView = inflater.inflate(R.layout.add_comment, null);
         }
 
 

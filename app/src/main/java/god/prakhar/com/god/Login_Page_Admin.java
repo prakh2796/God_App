@@ -11,13 +11,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,22 +27,22 @@ import static android.widget.Toast.LENGTH_SHORT;
 /**
  * Created by Prakhar Gupta on 05/10/2015.
  */
-public class Login_Page extends Activity {
+public class Login_Page_Admin extends Activity {
 
     EditText ed1,ed2;
     Button b;
-    TextView tv1;
+    TextView tv1,tv2;
     int loginStatus;
 
     Intent intent;
 
-    private String urlJsonObj = "http://hindi.pythonanywhere.com/login/";
+    private String urlJsonObj = "http://hindi.pythonanywhere.com/Admin/";
     private ProgressDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_page);
+        setContentView(R.layout.login_page_admin);
         b= (Button) findViewById(R.id.button);
         SharedPreferences sp = getSharedPreferences("data",MODE_PRIVATE);
         final SharedPreferences.Editor ed = sp.edit();
@@ -50,7 +50,7 @@ public class Login_Page extends Activity {
         String str = sp.getString("username", "N/A");
         if (!str.equals("N/A"))
         {
-            intent = new Intent(Login_Page.this,MainActivity.class);
+            intent = new Intent(Login_Page_Admin.this,MainActivity.class);
             startActivity(intent);
             finish();
         }
@@ -70,15 +70,6 @@ public class Login_Page extends Activity {
                 ed.commit();
 
                 makeJsonObjectRequest();
-            }
-        });
-
-        tv1 = (TextView) findViewById(R.id.textView5);
-        tv1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent = new Intent(Login_Page.this,Login_Page.class);
-                startActivity(intent);
             }
         });
     }
@@ -109,20 +100,20 @@ public class Login_Page extends Activity {
                     JSONObject jsonObject = new JSONObject(response);
 
                     String status = jsonObject.getString("status");
-                    String userid = jsonObject.getString("user_id");
                     String uname = jsonObject.getString("username");
-
-//                    ed.putString("user_id",userid);
-//                    ed.commit();
+                    String flag = jsonObject.getString("flag");
+                    int f = Integer.parseInt(flag);
 
                     if (status.equals("success"))
                     {
 //                        Toast.makeText(getApplication(),"yay",Toast.LENGTH_SHORT).show();
-                        intent = new Intent(Login_Page.this,MainActivity.class);
-                        //ed2.setText("");
+                        if(f == 0) {
+                            intent = new Intent(Login_Page_Admin.this,MainActivity.class);
+                        }else{
+                            intent = new Intent(Login_Page_Admin.this,Login_Page_Admin.class);
+                        }
 
                         ed.putString("username",uname);
-                        ed.putString("user_id",userid);
                         ed.commit();
 
                         startActivity(intent);
